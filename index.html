@@ -755,26 +755,30 @@
     :root { --sq: 56px; }
   }
 
-  /* Phone portrait: scale board to fill screen, stack panels vertically */
+  /* Phone portrait: scale board to fill screen, reorder sections */
   @media (max-width: 600px) {
-    /* board: rank-labels(18) + padding(2×10) + border(2) = 50px overhead */
     :root { --sq: calc((100vw - 50px) / 8); }
 
     body { padding: 10px; }
-
-    .board-frame  { padding: 10px; }
+    .board-frame   { padding: 10px; }
     .board-eyebrow { font-size: 9px; letter-spacing: 3px; }
 
-    .panels {
-      flex-direction: column;
-      width: 100%;
-      gap: 10px;
-    }
-    .panel       { width: 100%; }
-    .panel-right { width: 100%; }
+    /* Flatten panel wrappers so every card/section becomes a direct
+       child of .app and can be freely reordered with `order` */
+    .panels, .panel, .panel-right { display: contents; }
 
-    /* Taller PGN box now that panel is full-width */
-    #pgn-text { height: 88px; }
+    /* New vertical order: settings → board → actions → status/caps → moves */
+    .panel-header  { order: 1; width: 100%; padding: 6px 0; }
+    .card-opponent { order: 2; }
+    .board-section { order: 3; align-self: center; }
+    .btns          { order: 4; }
+    .card-status   { order: 5; }
+    .card-captures { order: 6; }
+    .moves-card    { order: 7; }
+    .card-load     { order: 8; }
+
+    /* Full-width cards now that they're in a column */
+    .card, .btns { width: 100%; }
 
     /* Touch-friendly buttons */
     .btn     { padding: 12px 10px; font-size: 13px; min-height: 44px; }
@@ -782,7 +786,8 @@
     .lvl-btn { width: 28px; height: 28px; font-size: 12px; }
     .side-btn { padding: 8px 4px; }
 
-    /* Slightly more room for move list */
+    /* More room for PGN text and moves list */
+    #pgn-text { height: 88px; }
     .panel-right #moves-list { max-height: 240px; }
   }
 
@@ -820,7 +825,7 @@
       </div>
 
       <!-- Computer opponent -->
-      <div class="card">
+      <div class="card card-opponent">
         <div class="card-lbl">Opponent</div>
         <div class="opp-row">
           <button id="btn-2p"  class="opp-btn opp-active" onclick="setOpponent('human')">2 Players</button>
@@ -849,7 +854,7 @@
       </div>
 
       <div class="btns">
-        <button class="btn primary" onclick="newGame()">New Game</button>
+        <button class="btn primary" onclick="newGame()">New Game (Load From State)</button>
         <div class="btn-row">
           <button class="btn" onclick="undoMove()">↩ Undo</button>
           <button class="btn" onclick="flipBoard()">⇅ Flip</button>
@@ -861,12 +866,12 @@
         <div id="state-info" class="info-msg"></div>
       </div>
 
-      <div class="card">
+      <div class="card card-status">
         <div class="card-lbl">Status</div>
         <div id="status" class="white-turn"></div>
       </div>
 
-      <div class="card">
+      <div class="card card-captures">
         <div class="card-lbl">Captures</div>
         <div class="captured-row">
           <div class="cap-dot w"></div>
@@ -892,8 +897,8 @@
         <div id="moves-list"></div>
       </div>
 
-      <div class="card">
-        <div class="card-lbl">Load Position</div>
+      <div class="card card-load">
+        <div class="card-lbl">Load Position <span style="font-size:9px;opacity:0.5;font-family:'Inter',sans-serif;letter-spacing:1px;text-transform:none;font-weight:400">(optional)</span></div>
         <textarea id="moves-input" class="moves-input"
           placeholder="e4 e5 Nf3 Nc6&#10;1.e4 e5 2.Nf3 Nc6 3.Bb5"></textarea>
         <button class="btn primary" onclick="loadMovesFromInput()" style="margin-top:8px">Load Moves</button>
