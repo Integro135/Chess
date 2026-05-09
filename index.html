@@ -9,6 +9,8 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  :root { --sq: 64px; }
+
   body {
     background: #0c0a14;
     background-image:
@@ -21,6 +23,7 @@
     font-family: 'Inter', system-ui, sans-serif;
     color: #e0d8cc;
     padding: 24px;
+    overflow-x: hidden;
   }
 
   .app {
@@ -97,7 +100,7 @@
   }
 
   .rank-lbl {
-    height: 64px;
+    height: var(--sq);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -114,7 +117,7 @@
   }
 
   .file-lbl {
-    width: 64px;
+    width: var(--sq);
     text-align: center;
     font-size: 9.5px;
     font-weight: 700;
@@ -126,14 +129,14 @@
 
   #board {
     display: grid;
-    grid-template-columns: repeat(8, 64px);
-    grid-template-rows: repeat(8, 64px);
+    grid-template-columns: repeat(8, var(--sq));
+    grid-template-rows: repeat(8, var(--sq));
     box-shadow: inset 0 0 0 1px rgba(0,0,0,0.3);
   }
 
   .square {
-    width: 64px;
-    height: 64px;
+    width: var(--sq);
+    height: var(--sq);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -153,8 +156,8 @@
   .square.legal-move::after {
     content: '';
     position: absolute;
-    width: 24px;
-    height: 24px;
+    width: calc(var(--sq) * 0.375);
+    height: calc(var(--sq) * 0.375);
     border-radius: 50%;
     background: rgba(0,0,0,0.22);
     pointer-events: none;
@@ -165,13 +168,13 @@
     content: '';
     position: absolute;
     inset: 0;
-    border: 6px solid rgba(0,0,0,0.22);
+    border: calc(var(--sq) * 0.094) solid rgba(0,0,0,0.22);
     pointer-events: none;
     z-index: 2;
   }
 
   .piece {
-    font-size: 46px;
+    font-size: calc(var(--sq) * 0.72);
     line-height: 1;
     cursor: pointer;
     position: relative;
@@ -731,6 +734,65 @@
     0%   { transform: scale(1)    rotate(0deg);   opacity: 1;   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.55)); }
     30%  { transform: scale(1.45) rotate(12deg);  opacity: 0.9; filter: drop-shadow(0 0 14px rgba(240,180,40,0.85)); }
     100% { transform: scale(0.05) rotate(-20deg); opacity: 0;   filter: drop-shadow(0 0 0px transparent); }
+  }
+
+  /* ─── Responsive ─── */
+
+  /* Medium screens: stack board above panels (horizontal panel row still fits) */
+  @media (max-width: 1059px) {
+    body {
+      align-items: flex-start;
+      padding: 20px 16px;
+    }
+    .app {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+    }
+    .board-section { align-items: center; width: 100%; }
+    .panels        { justify-content: center; }
+  }
+
+  /* Small tablet / large phone landscape: shrink board a little */
+  @media (max-width: 780px) {
+    :root { --sq: 56px; }
+  }
+
+  /* Phone portrait: scale board to fill screen, stack panels vertically */
+  @media (max-width: 600px) {
+    /* board: rank-labels(18) + padding(2×10) + border(2) = 50px overhead */
+    :root { --sq: calc((100vw - 50px) / 8); }
+
+    body { padding: 10px; }
+
+    .board-frame  { padding: 10px; }
+    .board-eyebrow { font-size: 9px; letter-spacing: 3px; }
+
+    .panels {
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
+    }
+    .panel       { width: 100%; }
+    .panel-right { width: 100%; }
+
+    /* Taller PGN box now that panel is full-width */
+    #pgn-text { height: 88px; }
+
+    /* Touch-friendly buttons */
+    .btn     { padding: 12px 10px; font-size: 13px; min-height: 44px; }
+    .opp-btn { padding: 10px 8px; }
+    .lvl-btn { width: 28px; height: 28px; font-size: 12px; }
+    .side-btn { padding: 8px 4px; }
+
+    /* Slightly more room for move list */
+    .panel-right #moves-list { max-height: 240px; }
+  }
+
+  /* Prevent 300ms tap delay on all interactive elements */
+  .btn, .square, .opp-btn, .lvl-btn, .side-btn, .move-san, .promo-piece {
+    touch-action: manipulation;
   }
 </style>
 </head>
