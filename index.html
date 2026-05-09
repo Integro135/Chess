@@ -182,35 +182,36 @@
     transition: transform 0.12s ease, filter 0.12s ease;
   }
 
-  /* White pieces: solid white with black outline for definition */
+  /* White pieces: solid white with dark outline via text-shadow */
   .piece-w {
     color: #ffffff;
-    filter:
-      drop-shadow(0 0 1.5px #000)
-      drop-shadow(0 0 1px #000)
-      drop-shadow(0 2px 4px rgba(0,0,0,0.7));
+    text-shadow:
+      0 0 3px #000,
+      0 0 5px rgba(0,0,0,0.7),
+      0 2px 4px rgba(0,0,0,0.5);
   }
 
-  /* Black pieces: solid near-black with subtle shadow */
+  /* Black pieces: solid dark with subtle depth */
   .piece-b {
     color: #1a1a1a;
-    filter:
-      drop-shadow(0 0 1px rgba(255,255,255,0.2))
-      drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+    text-shadow:
+      0 0 2px rgba(255,255,255,0.15),
+      0 2px 4px rgba(0,0,0,0.5);
   }
 
   .piece-w:hover {
     transform: translateY(-2px) scale(1.1);
-    filter:
-      drop-shadow(0 0 2px #000)
-      drop-shadow(0 4px 10px rgba(0,0,0,0.8));
+    text-shadow:
+      0 0 4px #000,
+      0 0 8px rgba(0,0,0,0.8),
+      0 4px 8px rgba(0,0,0,0.6);
   }
 
   .piece-b:hover {
     transform: translateY(-2px) scale(1.1);
-    filter:
-      drop-shadow(0 0 1px rgba(255,255,255,0.25))
-      drop-shadow(0 4px 10px rgba(0,0,0,0.6));
+    text-shadow:
+      0 0 2px rgba(255,255,255,0.2),
+      0 4px 8px rgba(0,0,0,0.6);
   }
 
   /* ─── Panels wrapper ─── */
